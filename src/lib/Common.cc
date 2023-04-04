@@ -186,12 +186,22 @@ void printSourceCodeInfo(Value *V, string Tag) {
   //FN = FN.substr(FN.find('/') + 1);
   //FN = FN.substr(FN.find('/') + 1);
 
+  auto *Caller = I->getFunction();
+  std::string CallerFile = "unknown";
+  int CallerDeclLine = 0;
+  if (auto *CallerSP = Caller->getSubprogram()) {
+	CallerFile = CallerSP->getFilename().str();
+	CallerDeclLine = CallerSP->getLine();
+  }
+
   while(line[0] == ' ' || line[0] == '\t')
     line.erase(line.begin());
   OP << " ["
     << "\033[34m" << Tag << "\033[0m" << "] "
     << FN
-    << " +" << LineNo
+    << ":" << LineNo << ":" << Loc->getColumn() 
+	<< " " << I->getFunction()->getName()
+	<< " " << CallerFile << ":" << CallerDeclLine
 #ifdef PRINT_SOURCE_LINE
   << " "
     << "\033[35m" << line << "\033[0m" <<'\n';
@@ -218,11 +228,12 @@ void printSourceCodeInfo(Function *F, string Tag) {
     OP << " ["
       << "\033[34m" << Tag << "\033[0m" << "] "
       << FN
-      << " +" << SP->getLine()
+      << ":" << SP->getLine()
 #ifdef PRINT_SOURCE_LINE
       << " "
       << "\033[35m" << line << "\033[0m"
 #endif
+	  << " " << F->getName()
       <<'\n';
   }
 #ifdef PRINT_SOURCE_LINE

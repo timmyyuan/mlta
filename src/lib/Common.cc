@@ -28,17 +28,7 @@ string getFileName(DILocation *Loc, DISubprogram *SP) {
 		FN = SP->getFilename().str();
 	else
 		return "";
-
-	int slashToTrim = 2;
-	char *user = getlogin();
-	if (strstr(user, "kjlu")) {
-		slashToTrim = 0;
-		trimPathSlash(FN, slashToTrim);
-		FN = string(SOURCE_CODE_PATH) + "/" + FN;
-	} 
-	else {
-		OP << "== Warning: please specify the path of linux source.";
-	}
+	
 	return FN;
 }
 

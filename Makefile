@@ -14,8 +14,7 @@ endif
 build_analyzer_func = \
 	(mkdir -p ${2} \
 		&& cd ${2} \
-		&& PATH=${LLVM_BUILD}/bin:${PATH} \
-			LLVM_TOOLS_BINARY_DIR=${LLVM_BUILD}/bin \
+		&& LLVM_TOOLS_BINARY_DIR=${LLVM_BUILD}/bin \
 			LLVM_LIBRARY_DIRS=${LLVM_BUILD}/lib \
 			LLVM_INCLUDE_DIRS=${LLVM_BUILD}/include \
 			CC=clang CXX=clang++ \

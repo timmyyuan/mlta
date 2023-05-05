@@ -217,27 +217,48 @@ bool CallGraphPass::doInitialization(Module *M) {
 		// Map the declaration functions to actual ones
 		// NOTE: to delete an item, must iterate by reference
 		for (auto &SF : Ctx->sigFuncsMap) {
+			set<Function*> removes;
+			set<Function*> inserts;
 			for (auto F : SF.second) {
 				if (!F)
 					continue;
 				if (F->isDeclaration()) {
-					SF.second.erase(F);
+					removes.insert(F);
 					if (Function *AF = Ctx->GlobalFuncMap[F->getGUID()]) {
-						SF.second.insert(AF);
+						inserts.insert(AF);
 					}
 				}
+			}
+
+			for (auto F: removes) {
+				SF.second.erase(F);
+			}
+
+			for (auto F: inserts) {
+				SF.second.insert(F);
 			}
 		}
 
 		for (auto &TF : typeIdxFuncsMap) {
 			for (auto &IF : TF.second) {
+				set<Function*> removes;
+				set<Function*> inserts;
+				
 				for (auto F : IF.second) {
 					if (F->isDeclaration()) {
-						IF.second.erase(F);
+						removes.insert(F);
 						if (Function *AF = Ctx->GlobalFuncMap[F->getGUID()]) {
-							IF.second.insert(AF);
+							inserts.insert(AF);
 						}
 					}
+				}
+
+				for (auto F: removes) {
+					IF.second.erase(F);
+				}
+
+				for (auto F: inserts) {
+					IF.second.insert(F);
 				}
 			}
 		}

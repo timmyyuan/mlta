@@ -286,6 +286,10 @@ Value *MLTA::recoverBaseType(Value *V) {
 	return NULL;
 }
 
+bool fallDebugLocation(GlobalVariable *GV, std::string Fn) {
+	return GV->hasName() && GV->getName() == Fn;
+}
+
 // This function analyzes globals to collect information about which
 // types functions have been assigned to.
 // The analysis is field sensitive.
@@ -789,6 +793,22 @@ void MLTA::printTypeChain(list<typeidx_t> &Chain) {
 	OP<<"\n";
 }
 
+void printDeclaration(Function *F) {
+	std::string Filename = "unknown";
+	int Line = -1;
+	DISubprogram *SP = F->getSubprogram();
+	if (SP) {
+		Filename = SP->getFilename().str();
+		Line = SP->getLine();
+	}
+
+	OP << " ["
+	<< "\033[34m" << "TARGET" << "\033[0m" << "] "
+	<< Filename << ":" << Line
+	<< " " << F->getName()
+	<<'\n';
+}
+
 void MLTA::printTargets(FuncSet &FS, CallInst *CI) {
 
 	if (CI) {
@@ -802,7 +822,7 @@ void MLTA::printTargets(FuncSet &FS, CallInst *CI) {
 	OP<<"\n\t Indirect-call targets: ("<<FS.size()<<")\n";
 	for (auto F : FS) {
 		if (F->isDeclaration()) {
-			OP<<"ERROR: print declaration function: "<<F->getName()<<"\n";
+			printDeclaration(F);
 			continue;
 		}
 		printSourceCodeInfo(F, "TARGET");

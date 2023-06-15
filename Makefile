@@ -14,11 +14,11 @@ endif
 build_analyzer_func = \
 	(mkdir -p ${2} \
 		&& cd ${2} \
-		&& LLVM_DIR=${LLVM_BUILD} CC=clang CXX=clang++ \
+		&& LLVM_DIR=${LLVM_BUILD} CC=gcc CXX=g++ \
 			cmake ${1}	\
 				-DCMAKE_BUILD_TYPE=Build \
 				-DLLVM_ENABLE_ASSERTIONS=ON \
-				-DCMAKE_CXX_FLAGS_BUILD="-std=c++14 -fpic -fno-rtti -g" \
+				-DCMAKE_CXX_FLAGS="-std=c++14 -fPIC -fno-rtti -g" \
 		&& make -j${NPROC})
 
 

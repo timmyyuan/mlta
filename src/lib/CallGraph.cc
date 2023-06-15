@@ -222,10 +222,13 @@ bool CallGraphPass::doInitialization(Module *M) {
 			for (auto F : SF.second) {
 				if (!F)
 					continue;
+				
+				// TING: We have to keep the declarations though
+				// they probably increase targets
 				if (F->isDeclaration()) {
-					removes.insert(F);
 					if (Function *AF = Ctx->GlobalFuncMap[F->getGUID()]) {
 						inserts.insert(AF);
+						removes.insert(F);
 					}
 				}
 			}
@@ -244,11 +247,13 @@ bool CallGraphPass::doInitialization(Module *M) {
 				set<Function*> removes;
 				set<Function*> inserts;
 				
+				// TING: We have to keep the declarations though
+				// they probably increase targets
 				for (auto F : IF.second) {
 					if (F->isDeclaration()) {
-						removes.insert(F);
 						if (Function *AF = Ctx->GlobalFuncMap[F->getGUID()]) {
 							inserts.insert(AF);
+							removes.insert(F);
 						}
 					}
 				}

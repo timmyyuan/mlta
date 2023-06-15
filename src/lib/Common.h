@@ -12,6 +12,7 @@
 #include <bitset>
 #include <chrono>
 
+#include "Config.h"
 
 #define Z3_ENABLED 0
 

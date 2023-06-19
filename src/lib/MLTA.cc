@@ -476,7 +476,8 @@ bool MLTA::typeConfineInFunction(Function *F) {
 			for (User::op_iterator OI = I->op_begin(), 
 					OE = I->op_end();
 					OI != OE; ++OI) {
-				if (Function *F = dyn_cast<Function>(*OI)) {
+				Value* Op = isa<BitCastOperator>(*OI) ? (*OI)->stripPointerCasts() : *OI;
+				if (Function *F = dyn_cast<Function>(Op)) {
 					if (F->isIntrinsic())
 						continue;
 					if (CI->isIndirectCall()) {
